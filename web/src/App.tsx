@@ -3,8 +3,8 @@ import Plot, { PlotParams } from "react-plotly.js";
 const EXAMPLE_PLOT_PARAMS: PlotParams = {
   data: [
     {
-      x: [1, 2, 3],
-      y: [1, 2, 3],
+      x: [1, 2, 3], // These are what we populate with the OUTPUT from grain .wasm functions
+      y: [1, 2, 3], //
       type: "bar",
       mode: "lines+markers",
       marker: { color: "red" },
