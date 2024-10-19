@@ -1,4 +1,13 @@
-import { Paper, Stack, Tabs, Text } from "@mantine/core";
+import {
+  Group,
+  InputLabel,
+  InputLabelProps,
+  NumberInput,
+  Paper,
+  Stack,
+  Tabs,
+  Text,
+} from "@mantine/core";
 import { FC } from "react";
 import Plot, { PlotParams } from "react-plotly.js";
 
@@ -14,7 +23,11 @@ const EXAMPLE_PLOT_PARAMS: PlotParams = {
       marker: { color: "red" },
     },
   ],
-  layout: { width: 1398, height: 600 },
+  layout: { width: 1000, height: 600 },
+};
+
+const LABEL_PROPS: InputLabelProps = {
+  fw: "100",
 };
 
 export const App = () => {
@@ -33,9 +46,17 @@ export const App = () => {
       {TAB_VALUES.map((item) => (
         <Tabs.Panel value={item}>
           <Paper m="32 auto" withBorder shadow="sm" w={1400}>
-            <Stack justify='center'>
+            <Stack>
               <TextThinHeader>Plot for: {item}</TextThinHeader>
-              <Plot {...EXAMPLE_PLOT_PARAMS} />
+              <Group w="100%" gap={0}>
+                <Stack justify="flex-start" w={350} h={500} p="xl">
+                  <NumberInput labelProps={LABEL_PROPS} label="X-Offset" />
+                  <NumberInput labelProps={LABEL_PROPS} label="Y-Offset" />
+                  <NumberInput labelProps={LABEL_PROPS} label="Multiplier" />
+                  <InputLabel />
+                </Stack>
+                <Plot {...EXAMPLE_PLOT_PARAMS} />
+              </Group>
             </Stack>
           </Paper>
         </Tabs.Panel>
