@@ -1,4 +1,7 @@
+import { Tabs } from "@mantine/core";
 import Plot, { PlotParams } from "react-plotly.js";
+
+const TAB_VALUES = ["f(x)", "g(x)", "j(x)", "k(x)"];
 
 const EXAMPLE_PLOT_PARAMS: PlotParams = {
   data: [
@@ -18,9 +21,20 @@ export const App = () => {
 
   // App JSX (basically HTML) UI is returned here
   return (
-    <div>
-      <h1>CMPS 401 Prototype</h1>
-      <Plot {...EXAMPLE_PLOT_PARAMS} />
-    </div>
+    <Tabs defaultValue={TAB_VALUES[0]}>
+      <Tabs.List>
+        {TAB_VALUES.map((item) => (
+          <Tabs.Tab value={item} variant="outline">
+            {item}
+          </Tabs.Tab>
+        ))}
+      </Tabs.List>
+      {TAB_VALUES.map((item) => (
+        <Tabs.Panel value={item}>
+          <h1>Plot for: {item}</h1>
+          <Plot {...EXAMPLE_PLOT_PARAMS} />
+        </Tabs.Panel>
+      ))}
+    </Tabs>
   );
 };
