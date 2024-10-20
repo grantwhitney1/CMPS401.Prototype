@@ -35,8 +35,29 @@ export const App = () => {
     return xValuesTest.map((x) => multiplier * (1 / (x - xOffset)) + yOffset);
   }, [multiplier, xOffset, yOffset]);
 
+  const linearData = useMemo(() =>{
+    return xValuesTest.map(x => multiplier *(x-xOffset)+yOffset);
+
+  }, [multiplier, xOffset,yOffset]);
+
+  const lnData = useMemo (() => {
+    return xValuesTest.map(x => multiplier * Math.log(x-xOffset)+yOffset);
+  }, [multiplier, xOffset,yOffset]);
+
   const plots: PlotParams[] = useMemo(
     () => [
+      {
+        data: [
+          {
+            x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
+            y: linearData, //
+            type: "scatter",
+            mode: "lines",
+            marker: { color: "red" },
+          },
+        ],
+        layout: { width: 1000, height: 600 , screenX: 10},
+      },
       {
         data: [
           {
@@ -61,6 +82,17 @@ export const App = () => {
         ],
         layout: { width: 1000, height: 600 },
       },
+      {data: [
+        {
+          x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
+          y: lnData, //
+          type: "scatter",
+          mode: "lines",
+          marker: { color: "red" },
+        },
+      ],
+      layout: { width: 1000, height: 600 , screenX: 10},
+    },
     ],
     [cubicData, reciprocalData]
   );
