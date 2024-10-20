@@ -13,6 +13,9 @@ import Plot, { PlotParams } from "react-plotly.js";
 
 const TAB_VALUES = ["f(x)", "g(x)", "j(x)", "k(x)"];
 
+const xValuesTest = Array.from({ length: 800 }, (_, i) => i - 400);
+const xOffset = 0;
+
 /*Functions for 1/x and cubic*/
 const calculateCubicValues = (
   xValues: number[],
@@ -31,9 +34,7 @@ const calculateReciprocalValues = (
 ): number[] => {
   return xValues.map((x) => multiplier * (1 / (x - xOffset)) + yOffset);
 };
-const xValuesTest = Array.from({ length: 800 }, (_, i) => i - 400);
 
-const xOffset = 0;
 const yValuesTestReciprocal = calculateReciprocalValues(
   xValuesTest,
   xOffset,
@@ -59,8 +60,8 @@ const PLOTS: PlotParams[] = [
   {
     data: [
       {
-        x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
-        y: yValuesTestCubic, //
+        x: xValuesTest,
+        y: yValuesTestCubic,
         type: "scatter",
         mode: "lines",
         marker: { color: "blue" },
@@ -76,7 +77,7 @@ const LABEL_PROPS: InputLabelProps = {
 
 export const App = () => {
   // TypeScript code goes here
-  // Calculate y values
+
   // App JSX (basically HTML) UI is returned here
   return (
     <Tabs defaultValue={TAB_VALUES[0]}>
