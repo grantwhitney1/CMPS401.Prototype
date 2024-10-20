@@ -36,7 +36,7 @@ const EXAMPLE_PLOT_PARAMS: PlotParams = {
       marker: { color: "red" },
     },
   ],
-  layout: { width: 1000, height: 600 },
+  layout: { width: 1000, height: 1000 },
 };
 
 const LABEL_PROPS: InputLabelProps = {
