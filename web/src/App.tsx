@@ -14,23 +14,6 @@ import Plot, { PlotParams } from "react-plotly.js";
 const TAB_VALUES = ["f(x)", "g(x)", "j(x)", "k(x)"];
 
 const xValuesTest = Array.from({ length: 800 }, (_, i) => i - 400);
-const xOffset = 0;
-
-const calculateReciprocalValues = (
-  xValues: number[],
-  xOffset: number,
-  yOffset: number,
-  multiplier: number
-): number[] => {
-  return xValues.map((x) => multiplier * (1 / (x - xOffset)) + yOffset);
-};
-
-const yValuesTestReciprocal = calculateReciprocalValues(
-  xValuesTest,
-  xOffset,
-  0,
-  1
-);
 
 const LABEL_PROPS: InputLabelProps = {
   fw: "100",
@@ -40,12 +23,16 @@ export const App = () => {
   // TypeScript code goes here
   const [xOffset, setXOffset] = useState<number>(0);
   const [yOffset, setYOffset] = useState<number>(0);
-  const [multiplier, setMultiplier] = useState<number>(0);
+  const [multiplier, setMultiplier] = useState<number>(1);
 
   const cubicData = useMemo(() => {
     return xValuesTest.map(
       (x) => Math.pow(x + xOffset, 3) * multiplier + yOffset
     );
+  }, [multiplier, xOffset, yOffset]);
+
+  const reciprocalData = useMemo(() => {
+    return xValuesTest.map((x) => multiplier * (1 / (x - xOffset)) + yOffset);
   }, [multiplier, xOffset, yOffset]);
 
   const plots: PlotParams[] = useMemo(
@@ -60,13 +47,13 @@ export const App = () => {
             marker: { color: "red" },
           },
         ],
-        layout: { width: 1000, height: 600 },
+        layout: { width: 1000, height: 600 , screenX: 10},
       },
       {
         data: [
           {
             x: xValuesTest,
-            y: yValuesTestReciprocal,
+            y: reciprocalData,
             type: "scatter",
             mode: "lines",
             marker: { color: "blue" },
@@ -75,7 +62,7 @@ export const App = () => {
         layout: { width: 1000, height: 600 },
       },
     ],
-    [cubicData]
+    [cubicData, reciprocalData]
   );
 
   // App JSX (basically HTML) UI is returned here
