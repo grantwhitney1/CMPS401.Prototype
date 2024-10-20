@@ -94,7 +94,7 @@ export const App = () => {
       layout: { width: 1000, height: 600 , screenX: 10},
     },
     ],
-    [cubicData, reciprocalData]
+    [cubicData, linearData, lnData, reciprocalData]
   );
 
   // App JSX (basically HTML) UI is returned here
