@@ -32,7 +32,7 @@ const EXAMPLE_PLOT_PARAMS: PlotParams = {
       x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
       y: yValuesTestReciprocal, //
       type: "scatter",
-      mode: "lines+markers",
+      mode: "lines",
       marker: { color: "red" },
     },
   ],
