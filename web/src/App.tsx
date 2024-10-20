@@ -13,11 +13,24 @@ import Plot, { PlotParams } from "react-plotly.js";
 
 const TAB_VALUES = ["f(x)", "g(x)", "j(x)", "k(x)"];
 
+/*Functions for 1/x and cubic*/
+const calculateCubicValues = (xValues: number[], xOffset: number, yOffset: number, multiplier: number): number[] => {
+  return xValues.map(x => (Math.pow(x + xOffset, 3) * multiplier) + yOffset);
+};
+
+const calculateReciprocalValues = (xValues: number[], xOffset: number, yOffset: number, multiplier: number): number[] => {
+  return xValues.map(x => multiplier*(1/(x-xOffset))+yOffset);
+};
+const xValuesTest = Array.from({ length: 800 }, (_, i) => i - 400);
+/*const yValuesTestCubic = calculateCubicValues(xValuesTest,1,1,1); */
+const xOffset = 0
+const yValuesTestReciprocal = calculateReciprocalValues(xValuesTest,xOffset,0,1); 
+
 const EXAMPLE_PLOT_PARAMS: PlotParams = {
   data: [
     {
-      x: [1, 2, 3], // These are what we populate with the OUTPUT from grain .wasm functions
-      y: [1, 2, 3], //
+      x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
+      y: yValuesTestReciprocal, //
       type: "scatter",
       mode: "lines+markers",
       marker: { color: "red" },
@@ -32,7 +45,7 @@ const LABEL_PROPS: InputLabelProps = {
 
 export const App = () => {
   // TypeScript code goes here
-
+ // Calculate y values
   // App JSX (basically HTML) UI is returned here
   return (
     <Tabs defaultValue={TAB_VALUES[0]}>
