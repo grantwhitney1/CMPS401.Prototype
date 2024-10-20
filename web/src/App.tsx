@@ -1,4 +1,5 @@
 import {
+  ColorPicker,
   Group,
   InputLabel,
   InputLabelProps,
@@ -24,6 +25,7 @@ export const App = () => {
   const [xOffset, setXOffset] = useState<number>(0);
   const [yOffset, setYOffset] = useState<number>(0);
   const [multiplier, setMultiplier] = useState<number>(1);
+const [ lineColor, setLineColor] = useState<string>('red');
 
   const cubicData = useMemo(() => {
     return xValuesTest.map(
@@ -53,7 +55,7 @@ export const App = () => {
             y: linearData,
             type: "scatter",
             mode: "lines",
-            marker: { color: "red" },
+            marker: { color: lineColor },
           },
         ],
         layout: { width: 1000, height: 600 , screenX: 10},
@@ -65,7 +67,7 @@ export const App = () => {
             y: cubicData,
             type: "scatter",
             mode: "lines",
-            marker: { color: "red" },
+            marker: { color: lineColor },
           },
         ],
         layout: { width: 1000, height: 600 , screenX: 10},
@@ -88,13 +90,13 @@ export const App = () => {
           y: lnData,
           type: "scatter",
           mode: "lines",
-          marker: { color: "red" },
+          marker: { color: lineColor },
         },
       ],
       layout: { width: 1000, height: 600 , screenX: 10},
     },
     ],
-    [cubicData, linearData, lnData, reciprocalData]
+    [cubicData, linearData, lnData, reciprocalData, lineColor]
   );
 
   // App JSX (basically HTML) UI is returned here
@@ -133,6 +135,15 @@ export const App = () => {
                     label="Multiplier"
                   />
                   <InputLabel />
+                  <ColorPicker
+                    value={lineColor}
+                    onChange={setLineColor}
+                    swatches={[
+                      'red', 'green', 'blue', 'yellow',
+                      'orange', 'purple', 'pink', 'black', 'white'
+                    ]}
+                    style={{ marginTop: '10px' }}
+                  />
                 </Stack>
                 <Plot {...plots[index]} />
               </Group>
