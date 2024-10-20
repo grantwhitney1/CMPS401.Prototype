@@ -49,8 +49,8 @@ export const App = () => {
       {
         data: [
           {
-            x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
-            y: linearData, //
+            x: xValuesTest,
+            y: linearData,
             type: "scatter",
             mode: "lines",
             marker: { color: "red" },
@@ -61,8 +61,8 @@ export const App = () => {
       {
         data: [
           {
-            x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
-            y: cubicData, //
+            x: xValuesTest,
+            y: cubicData,
             type: "scatter",
             mode: "lines",
             marker: { color: "red" },
@@ -84,8 +84,8 @@ export const App = () => {
       },
       {data: [
         {
-          x: xValuesTest, // These are what we populate with the OUTPUT from grain .wasm functions
-          y: lnData, //
+          x: xValuesTest,
+          y: lnData,
           type: "scatter",
           mode: "lines",
           marker: { color: "red" },
