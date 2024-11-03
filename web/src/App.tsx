@@ -9,8 +9,9 @@ import {
   Tabs,
   Text,
 } from "@mantine/core";
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import Plot, { PlotParams } from "react-plotly.js";
+import { Function } from "./types";
 
 const TAB_VALUES = ["f(x)", "g(x)", "j(x)", "k(x)"];
 
@@ -19,6 +20,53 @@ const xValuesTest = Array.from({ length: 800 }, (_, i) => i - 400);
 const LABEL_PROPS: InputLabelProps = {
   fw: "100",
 };
+
+// EXAMPLE for f(x) = 3*sin(2x+4) + (1/2)(e^(-x^2)) + 5
+const TestF = new Function({
+  value: {
+    coefficient: 1,
+    exponent: 1,
+    terms: {
+      a: {
+        exponent: 1,
+        coefficient: 3,
+        terms: {
+          a: {
+            exponent: 1,
+            coefficient: 1,
+            terms: {
+              a: {
+                exponent: 1,
+                coefficient: 2,
+              },
+              b: 4,
+            },
+            functionOperation: Math.sin,
+          },
+        },
+      },
+      b: {
+        exponent: 1,
+        coefficient: 1,
+        terms: {
+          a: {
+            exponent: 1,
+            coefficient: 1 / 2,
+            terms: {
+              a: {
+                exponent: 2,
+                coefficient: -1,
+                functionOperation: Math.exp,
+              },
+            },
+          },
+          b: 5,
+        },
+      },
+    },
+  },
+  range: { a: 0, b: 4 },
+});
 
 export const App = () => {
   // TypeScript code goes here
@@ -37,14 +85,13 @@ const [ lineColor, setLineColor] = useState<string>('red');
     return xValuesTest.map((x) => multiplier * (1 / (x - xOffset)) + yOffset);
   }, [multiplier, xOffset, yOffset]);
 
-  const linearData = useMemo(() =>{
-    return xValuesTest.map(x => multiplier *(x-xOffset)+yOffset);
+  const linearData = useMemo(() => {
+    return xValuesTest.map((x) => multiplier * (x - xOffset) + yOffset);
+  }, [multiplier, xOffset, yOffset]);
 
-  }, [multiplier, xOffset,yOffset]);
-
-  const lnData = useMemo (() => {
-    return xValuesTest.map(x => multiplier * Math.log(x-xOffset)+yOffset);
-  }, [multiplier, xOffset,yOffset]);
+  const lnData = useMemo(() => {
+    return xValuesTest.map((x) => multiplier * Math.log(x - xOffset) + yOffset);
+  }, [multiplier, xOffset, yOffset]);
 
   const plots: PlotParams[] = useMemo(
     () => [
@@ -58,7 +105,7 @@ const [ lineColor, setLineColor] = useState<string>('red');
             marker: { color: lineColor },
           },
         ],
-        layout: { width: 1000, height: 600 , screenX: 10},
+        layout: { width: 1000, height: 600, screenX: 10 },
       },
       {
         data: [
@@ -70,7 +117,7 @@ const [ lineColor, setLineColor] = useState<string>('red');
             marker: { color: lineColor },
           },
         ],
-        layout: { width: 1000, height: 600 , screenX: 10},
+        layout: { width: 1000, height: 600, screenX: 10 },
       },
       {
         data: [
@@ -84,20 +131,27 @@ const [ lineColor, setLineColor] = useState<string>('red');
         ],
         layout: { width: 1000, height: 600 },
       },
-      {data: [
-        {
-          x: xValuesTest,
-          y: lnData,
-          type: "scatter",
-          mode: "lines",
-          marker: { color: lineColor },
-        },
-      ],
-      layout: { width: 1000, height: 600 , screenX: 10},
-    },
+      {
+        data: [
+          {
+            x: xValuesTest,
+            y: lnData,
+            type: "scatter",
+            mode: "lines",
+            marker: { color: lineColor },
+          },
+        ],
+        layout: { width: 1000, height: 600, screenX: 10 },
+      },
     ],
     [cubicData, linearData, lnData, reciprocalData, lineColor]
   );
+
+  useEffect(() => {
+    // EVALUATE EXAMPLE f(x) = 3*sin(2x+4) + (1/2)(e^(-x^2)) + 5
+    // AT x=1
+    alert(`${TestF.evaluate(1)}`);
+  }, []);
 
   // App JSX (basically HTML) UI is returned here
   return (
