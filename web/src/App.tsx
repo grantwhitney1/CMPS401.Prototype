@@ -73,7 +73,7 @@ export const App = () => {
   const [xOffset, setXOffset] = useState<number>(0);
   const [yOffset, setYOffset] = useState<number>(0);
   const [multiplier, setMultiplier] = useState<number>(1);
-const [ lineColor, setLineColor] = useState<string>('red');
+  const [lineColor, setLineColor] = useState<string>("red");
 
   const cubicData = useMemo(() => {
     return xValuesTest.map(
@@ -193,10 +193,17 @@ const [ lineColor, setLineColor] = useState<string>('red');
                     value={lineColor}
                     onChange={setLineColor}
                     swatches={[
-                      'red', 'green', 'blue', 'yellow',
-                      'orange', 'purple', 'pink', 'black', 'white'
+                      "red",
+                      "green",
+                      "blue",
+                      "yellow",
+                      "orange",
+                      "purple",
+                      "pink",
+                      "black",
+                      "white",
                     ]}
-                    style={{ marginTop: '10px' }}
+                    style={{ marginTop: "10px" }}
                   />
                 </Stack>
                 <Plot {...plots[index]} />
