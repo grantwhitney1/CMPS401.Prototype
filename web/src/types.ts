@@ -43,7 +43,16 @@ export class Function {
       return value.functionOperation ? value.functionOperation(result) : result;
     }
 
-    return evaluateExpression(this.expression);
+    return this?.expression && evaluateExpression(this.expression);
+  }
+
+  generatePoints() {
+    const xValues = Array.from(
+      { length: this.range.b - this.range.a },
+      (_, i) => i + this.range.a
+    );
+
+    return { x: [...xValues], y: [...xValues.map((x) => this.evaluate(x))] };
   }
 }
 
