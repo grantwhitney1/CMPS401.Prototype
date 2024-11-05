@@ -1,5 +1,5 @@
 type FunctionProps = {
-  value: Expression;
+  expression: Expression;
   range: { a: number; b: number };
 };
 
@@ -7,40 +7,43 @@ export class Function {
   expression: Expression;
   range: { a: number; b: number };
 
-  constructor({ value, range }: FunctionProps) {
-    this.expression = value;
+  constructor({ expression, range }: FunctionProps) {
+    this.expression = expression;
     this.range = range;
   }
 
   evaluate(x: number): number {
-    function evaluateExpression(value: Expression): number {
+    function evaluateExpression(expression: Expression): number {
       let result = 0;
 
-      if ("b" in value.terms) {
-        const aResult = evaluateExpressionMember(value.terms.a);
-        const bResult = evaluateExpressionMember(value.terms.b);
-        result = value.operator
-          ? value.operator(aResult, bResult)
-          : aResult + bResult;
-      } else {
-        result = evaluateExpressionMember(value.terms.a);
-      }
+      expression?.terms.forEach((member, index) => {
+        if (index === 0)
+          result += expression?.operator
+            ? expression?.operator(result, evaluateExpressionMember(member))
+            : result + evaluateExpressionMember(member);
+      });
 
-      result *= value.coefficient;
-      result **= value.exponent;
+      result *= evaluateExpressionMember(expression.coefficient);
+      result **= evaluateExpressionMember(expression.exponent);
 
-      return value.functionOperation ? value.functionOperation(result) : result;
+      return expression.functionOperation
+        ? expression.functionOperation(result)
+        : result;
     }
 
     function evaluateExpressionMember(
-      value: Expression | Term | number
+      member: Expression | Term | number
     ): number {
-      if (typeof value === "number") return value;
-      if ("terms" in value) return evaluateExpression(value);
+      if (typeof member === "number") return member;
+      if ("terms" in member) return evaluateExpression(member);
 
-      const result = x ** value.exponent * value.coefficient;
+      const result =
+        x ** evaluateExpressionMember(member.exponent) *
+        evaluateExpressionMember(member.coefficient);
 
-      return value.functionOperation ? value.functionOperation(result) : result;
+      return member.functionOperation
+        ? member.functionOperation(result)
+        : result;
     }
 
     return this?.expression && evaluateExpression(this.expression);
@@ -57,17 +60,15 @@ export class Function {
 }
 
 type Expression = {
-  terms:
-    | { a: Expression | Term | number; b: Expression | Term | number }
-    | { a: Expression | Term | number };
-  exponent: number;
-  coefficient: number;
+  terms: Array<Expression | Term | number>;
+  exponent: Expression | Term | number;
+  coefficient: Expression | Term | number;
   operator?: (a: number, b: number) => number;
   functionOperation?: (x: number) => number;
 };
 
 type Term = {
-  exponent: number;
-  coefficient: number;
+  exponent: Expression | Term | number;
+  coefficient: Expression | Term | number;
   functionOperation?: (x: number) => number;
 };

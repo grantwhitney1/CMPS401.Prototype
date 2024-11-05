@@ -9,47 +9,47 @@ import { Function } from "./types";
 
 // EXAMPLE for f(x) = 3*sin(2x+4) + (1/2)(e^(-x^2)) + 5
 const TestF = new Function({
-  value: {
+  expression: {
     coefficient: 1,
     exponent: 1,
-    terms: {
-      a: {
+    terms: [
+      {
         exponent: 1,
         coefficient: 3,
-        terms: {
-          a: {
+        terms: [
+          {
             exponent: 1,
             coefficient: 1,
-            terms: {
-              a: {
+            terms: [
+              {
                 exponent: 1,
                 coefficient: 2,
               },
-              b: 4,
-            },
+              4,
+            ],
             functionOperation: Math.sin,
           },
-        },
+        ],
       },
-      b: {
+      {
         exponent: 1,
         coefficient: 1,
-        terms: {
-          a: {
+        terms: [
+          {
             exponent: 1,
             coefficient: 1 / 2,
-            terms: {
-              a: {
+            terms: [
+              {
                 exponent: 2,
                 coefficient: -1,
                 functionOperation: Math.exp,
               },
-            },
+            ],
           },
-          b: 5,
-        },
+          5,
+        ],
       },
-    },
+    ],
   },
   range: { a: -400, b: 400 },
 });
