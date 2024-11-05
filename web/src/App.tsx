@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import Plot, { PlotParams } from "react-plotly.js";
 import { useHeight } from "./hooks/use-height";
 import { useWidth } from "./hooks/use-width";
-import { Function } from "./types";
+import { Function } from "./function";
 
 // EXAMPLE for f(x) = 3*sin(2x+4) + (1/2)(e^(-x^2)) + 5
 const TestF = new Function({
