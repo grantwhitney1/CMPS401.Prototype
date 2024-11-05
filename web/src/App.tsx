@@ -37,7 +37,7 @@ const TestF = new Function({
         terms: [
           {
             exponent: 1,
-            coefficient: 1 / 2,
+            coefficient: 20,
             terms: [
               {
                 exponent: 2,
