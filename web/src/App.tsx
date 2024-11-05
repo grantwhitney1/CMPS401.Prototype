@@ -51,7 +51,7 @@ const TestF = new Function({
       },
     ],
   },
-  range: { a: -400, b: 400 },
+  range: { a: -40, b: 40 },
 });
 
 export const App = () => {

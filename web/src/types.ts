@@ -51,8 +51,8 @@ export class Function {
 
   generatePoints() {
     const xValues = Array.from(
-      { length: this.range.b - this.range.a },
-      (_, i) => i + this.range.a
+      { length: (this.range.b - this.range.a) * 1000 },
+      (_, i) => (i + this.range.a) / 1000
     );
 
     return { x: [...xValues], y: [...xValues.map((x) => this.evaluate(x))] };
