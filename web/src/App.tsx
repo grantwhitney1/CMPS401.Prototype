@@ -1,6 +1,13 @@
 import { faPalette } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, ColorPicker, Group, Paper, Stack } from "@mantine/core";
+import {
+  Button,
+  ColorPicker,
+  Group,
+  Paper,
+  Stack,
+  TextInput,
+} from "@mantine/core";
 import TeX from "@matejmazur/react-katex";
 import "katex/dist/katex.min.css";
 import { useCallback, useMemo, useState } from "react";
@@ -9,6 +16,16 @@ import { Function } from "./function";
 import { useHeight } from "./hooks/use-height";
 import { useWidth } from "./hooks/use-width";
 import { getSecondaryColor } from "./utils/color-utils";
+
+const ColorSwatches = [
+  "#E4080A",
+  "#FE9900",
+  "#FFDE59",
+  "#7DDA58",
+  "#5DB6E9",
+  "#CC6CE7",
+  "#000000",
+];
 
 // EXAMPLE for f(x) = 3*sin(2x+4) + (1/2)(e^(-x^2)) + 5
 const TestF = new Function({
@@ -67,7 +84,7 @@ export const App = () => {
     [showColorSwatch, setShowColorSwatch]
   );
 
-  const [lineColor, setLineColor] = useState<string>("#E4080A");
+  const [lineColor, setLineColor] = useState<string>(ColorSwatches[0]);
 
   const iconColor = useMemo(() => getSecondaryColor(lineColor), [lineColor]);
 
@@ -92,22 +109,23 @@ export const App = () => {
     <Stack>
       <Group p={0} m={0} w="100%" gap={0} wrap="nowrap" justify="stretch">
         <Stack
-          m={0}
-          gap={0}
-          h="100vh"
           w={(width / 0.7) * 0.3}
           justify="stretch"
+          h="100vh"
+          gap={0}
+          m={0}
         >
           <Paper
-            withBorder
-            h="100%"
-            shadow="xl"
-            mr="1rem"
-            p="md"
-            pt="xl"
             bg="rgba(0, 0, 0, 0.025)"
+            shadow="xl"
+            withBorder
+            mr="1rem"
+            h="100%"
+            pt="md"
+            p="md"
           >
-            <Group justify="left" pl="md" wrap="nowrap">
+            <TeX math="f(x) = 3sin(2x + 4) + {1 \over 2}e^{-x^2} + 5" />
+            <Group justify="left" pt="md" wrap="nowrap">
               <Button
                 onClick={toggleColorSwatch}
                 bg={lineColor}
@@ -117,23 +135,15 @@ export const App = () => {
               >
                 <FontAwesomeIcon icon={faPalette} color={iconColor} />
               </Button>
-              <TeX math="f(x) = 3sin(2x + 4) + {1 \over 2}e^{-x^2} + 5" />
+              <TextInput w="calc(100% - 32px)" />
             </Group>
             {showColorSwatch && (
               <ColorPicker
-                value={lineColor}
-                ml="md"
-                mt="md"
+                swatches={ColorSwatches}
                 onChange={setLineColor}
-                swatches={[
-                  "#E4080A",
-                  "#FE9900",
-                  "#FFDE59",
-                  "#7DDA58",
-                  "#5DB6E9",
-                  "#CC6CE7",
-                  "#000000",
-                ]}
+                value={lineColor}
+                mt="md"
+                w="100%"
               />
             )}
           </Paper>
