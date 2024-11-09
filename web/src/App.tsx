@@ -1,11 +1,14 @@
-import { ColorPicker, Group, Paper, Stack, Text } from "@mantine/core";
+import { faPalette } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, ColorPicker, Group, Paper, Stack } from "@mantine/core";
 import TeX from "@matejmazur/react-katex";
 import "katex/dist/katex.min.css";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Plot, { PlotParams } from "react-plotly.js";
+import { Function } from "./function";
 import { useHeight } from "./hooks/use-height";
 import { useWidth } from "./hooks/use-width";
-import { Function } from "./function";
+import { getSecondaryColor } from "./utils/color-utils";
 
 // EXAMPLE for f(x) = 3*sin(2x+4) + (1/2)(e^(-x^2)) + 5
 const TestF = new Function({
@@ -55,10 +58,18 @@ const TestF = new Function({
 });
 
 export const App = () => {
-  const width = useWidth() * 0.75;
+  const width = useWidth() * 0.7;
   const height = useHeight();
 
-  const [lineColor, setLineColor] = useState<string>("red");
+  const [showColorSwatch, setShowColorSwatch] = useState<boolean>(false);
+  const toggleColorSwatch = useCallback(
+    () => setShowColorSwatch(!showColorSwatch),
+    [showColorSwatch, setShowColorSwatch]
+  );
+
+  const [lineColor, setLineColor] = useState<string>("#E4080A");
+
+  const iconColor = useMemo(() => getSecondaryColor(lineColor), [lineColor]);
 
   const plots: PlotParams[] = useMemo(
     () => [
@@ -80,34 +91,51 @@ export const App = () => {
   return (
     <Stack>
       <Group p={0} m={0} w="100%" gap={0} wrap="nowrap" justify="stretch">
-        <Stack m={0} gap={0} h="100vh" w="25%" justify="stretch">
+        <Stack
+          m={0}
+          gap={0}
+          h="100vh"
+          w={(width / 0.7) * 0.3}
+          justify="stretch"
+        >
           <Paper
             withBorder
             h="100%"
             shadow="xl"
             mr="1rem"
+            p="md"
+            pt="xl"
             bg="rgba(0, 0, 0, 0.025)"
           >
-            <Text m="1rem auto" ta="center">
-              Plot for: &nbsp;
+            <Group justify="left" pl="md" wrap="nowrap">
+              <Button
+                onClick={toggleColorSwatch}
+                bg={lineColor}
+                w={32}
+                h={32}
+                p={0}
+              >
+                <FontAwesomeIcon icon={faPalette} color={iconColor} />
+              </Button>
               <TeX math="f(x) = 3sin(2x + 4) + {1 \over 2}e^{-x^2} + 5" />
-            </Text>
-            <ColorPicker
-              value={lineColor}
-              m="auto"
-              onChange={setLineColor}
-              swatches={[
-                "red",
-                "green",
-                "blue",
-                "yellow",
-                "orange",
-                "purple",
-                "pink",
-                "black",
-              ]}
-              style={{ marginTop: "10px" }}
-            />
+            </Group>
+            {showColorSwatch && (
+              <ColorPicker
+                value={lineColor}
+                ml="md"
+                mt="md"
+                onChange={setLineColor}
+                swatches={[
+                  "#E4080A",
+                  "#FE9900",
+                  "#FFDE59",
+                  "#7DDA58",
+                  "#5DB6E9",
+                  "#CC6CE7",
+                  "#000000",
+                ]}
+              />
+            )}
           </Paper>
         </Stack>
         <Plot {...plots[0]} />
