@@ -1,4 +1,8 @@
-import { faPalette } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faPalette,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Button,
@@ -10,12 +14,13 @@ import {
 } from "@mantine/core";
 import TeX from "@matejmazur/react-katex";
 import "katex/dist/katex.min.css";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Plot, { PlotParams } from "react-plotly.js";
 import { Function } from "./function";
 import { useHeight } from "./hooks/use-height";
 import { useWidth } from "./hooks/use-width";
 import { getSecondaryColor } from "./utils/color-utils";
+import { PlotData } from "plotly.js";
 
 const ColorSwatches = [
   "#E4080A",
@@ -84,26 +89,42 @@ export const App = () => {
     [showColorSwatch, setShowColorSwatch]
   );
 
+  const [hide, setHide] = useState<boolean>(false);
+  const toggleHide = useCallback(() => setHide(!hide), [hide, setHide]);
+  const hideIcon = useMemo(() => (hide ? faEyeSlash : faEye), [hide]);
+  const hideColor = useMemo(() => (hide ? "grey" : "black"), [hide]);
+
   const [lineColor, setLineColor] = useState<string>(ColorSwatches[0]);
 
   const iconColor = useMemo(() => getSecondaryColor(lineColor), [lineColor]);
 
-  const plots: PlotParams[] = useMemo(
-    () => [
-      {
-        data: [
-          {
-            ...TestF.generatePoints(),
-            type: "scatter",
-            mode: "lines",
-            marker: { color: lineColor },
-          },
-        ],
-        layout: { width: width, height: height },
-      },
-    ],
-    [height, lineColor, width]
+  const plot: Plotly.Data = useMemo(
+    () => ({
+      ...TestF.generatePoints(),
+      type: "scatter",
+      mode: "lines",
+      marker: { color: lineColor },
+    }),
+    [lineColor]
   );
+
+  const [data, setData] = useState<Partial<PlotData>[]>([plot]);
+
+  const plotParams: PlotParams = useMemo(
+    () => ({
+      data: data,
+      layout: { width: width, height: height },
+    }),
+    [data, height, width]
+  );
+
+  useEffect(() => {
+    if (hide) {
+      setData(data.filter((x) => x !== plot));
+    } else if (!data.includes(plot)) {
+      setData((prev) => [...prev, plot]);
+    }
+  }, [data, setData, hide, plot]);
 
   return (
     <Stack>
@@ -135,7 +156,10 @@ export const App = () => {
               >
                 <FontAwesomeIcon icon={faPalette} color={iconColor} />
               </Button>
-              <TextInput w="calc(100% - 32px)" />
+              <Button bg={hideColor} w={32} h={32} p={0} onClick={toggleHide}>
+                <FontAwesomeIcon icon={hideIcon} color="white" />
+              </Button>
+              <TextInput w="calc(100% - 96px)" />
             </Group>
             {showColorSwatch && (
               <ColorPicker
@@ -148,7 +172,7 @@ export const App = () => {
             )}
           </Paper>
         </Stack>
-        <Plot {...plots[0]} />
+        <Plot {...plotParams} />
       </Group>
     </Stack>
   );
