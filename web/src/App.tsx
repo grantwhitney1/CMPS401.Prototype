@@ -122,7 +122,7 @@ export const App = () => {
     if (hide) {
       setData(data.filter((x) => x !== plot));
     } else if (!data.includes(plot)) {
-      setData((prev) => [...prev, plot]);
+      setData([plot]);
     }
   }, [data, setData, hide, plot]);
 
