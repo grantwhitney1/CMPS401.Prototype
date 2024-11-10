@@ -12,15 +12,15 @@ import {
   Stack,
   TextInput,
 } from "@mantine/core";
-import TeX from "@matejmazur/react-katex";
 import "katex/dist/katex.min.css";
+import { PlotData } from "plotly.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Plot, { PlotParams } from "react-plotly.js";
 import { Function } from "./function";
+import { ParseExpression } from "./function-parser";
 import { useHeight } from "./hooks/use-height";
 import { useWidth } from "./hooks/use-width";
 import { getSecondaryColor } from "./utils/color-utils";
-import { PlotData } from "plotly.js";
 
 const ColorSwatches = [
   "#E4080A",
@@ -31,53 +31,6 @@ const ColorSwatches = [
   "#CC6CE7",
   "#000000",
 ];
-
-// EXAMPLE for f(x) = 3*sin(2x+4) + (1/2)(e^(-x^2)) + 5
-const TestF = new Function({
-  expression: {
-    coefficient: 1,
-    exponent: 1,
-    terms: [
-      {
-        exponent: 1,
-        coefficient: 3,
-        terms: [
-          {
-            exponent: 1,
-            coefficient: 1,
-            terms: [
-              {
-                exponent: 1,
-                coefficient: 2,
-              },
-              4,
-            ],
-            functionOperation: Math.sin,
-          },
-        ],
-      },
-      {
-        exponent: 1,
-        coefficient: 1,
-        terms: [
-          {
-            exponent: 1,
-            coefficient: 20,
-            terms: [
-              {
-                exponent: 2,
-                coefficient: -1,
-                functionOperation: Math.exp,
-              },
-            ],
-          },
-          5,
-        ],
-      },
-    ],
-  },
-  range: { a: -10, b: 10 },
-});
 
 export const App = () => {
   const width = useWidth() * 0.7;
@@ -98,17 +51,23 @@ export const App = () => {
 
   const iconColor = useMemo(() => getSecondaryColor(lineColor), [lineColor]);
 
-  const plot: Plotly.Data = useMemo(
-    () => ({
-      ...TestF.generatePoints(),
-      type: "scatter",
-      mode: "lines",
-      marker: { color: lineColor },
-    }),
-    [lineColor]
+  const [functionInputString, setFunctionInputString] = useState<
+    string | undefined
+  >();
+  const [customFunction, setCustomFunction] = useState<Function | undefined>();
+
+  const plot: Plotly.Data | undefined = useMemo(
+    () =>
+      customFunction && {
+        ...customFunction.generatePoints(),
+        type: "scatter",
+        mode: "lines",
+        marker: { color: lineColor },
+      },
+    [customFunction, lineColor]
   );
 
-  const [data, setData] = useState<Partial<PlotData>[]>([plot]);
+  const [data, setData] = useState<Partial<PlotData>[]>(plot ? [plot] : []);
 
   const plotParams: PlotParams = useMemo(
     () => ({
@@ -119,12 +78,24 @@ export const App = () => {
   );
 
   useEffect(() => {
+    if (!plot) return;
     if (hide) {
       setData(data.filter((x) => x !== plot));
     } else if (!data.includes(plot)) {
       setData([plot]);
     }
   }, [data, setData, hide, plot]);
+
+  useEffect(() => {
+    if (functionInputString) {
+      const expression = ParseExpression(functionInputString);
+      const newFunction = new Function({
+        expression: expression[0],
+        range: { a: -10, b: 10 },
+      });
+      setCustomFunction(newFunction);
+    }
+  }, [functionInputString]);
 
   return (
     <Stack>
@@ -142,10 +113,9 @@ export const App = () => {
             withBorder
             mr="1rem"
             h="100%"
-            pt="md"
             p="md"
+            pt={0}
           >
-            <TeX math="f(x) = 3sin(2x + 4) + {1 \over 2}e^{-x^2} + 5" />
             <Group justify="left" pt="md" wrap="nowrap">
               <Button
                 onClick={toggleColorSwatch}
@@ -159,7 +129,13 @@ export const App = () => {
               <Button bg={hideColor} w={32} h={32} p={0} onClick={toggleHide}>
                 <FontAwesomeIcon icon={hideIcon} color="white" />
               </Button>
-              <TextInput w="calc(100% - 96px)" />
+              <TextInput
+                w="calc(100% - 96px)"
+                value={functionInputString}
+                onChange={(event) =>
+                  setFunctionInputString(event.currentTarget.value)
+                }
+              />
             </Group>
             {showColorSwatch && (
               <ColorPicker
@@ -170,6 +146,7 @@ export const App = () => {
                 w="100%"
               />
             )}
+            {/* <Text>{debugPrintFunction}</Text> */}
           </Paper>
         </Stack>
         <Plot {...plotParams} />

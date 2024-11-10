@@ -1,4 +1,4 @@
-type FunctionProps = {
+export type FunctionProps = {
   expression: Expression;
   range: { a: number; b: number };
 };
@@ -59,7 +59,7 @@ export class Function {
   }
 }
 
-type Expression = {
+export type Expression = {
   terms: Array<Expression | Term | number>;
   exponent: Expression | Term | number;
   coefficient: Expression | Term | number;
@@ -67,7 +67,7 @@ type Expression = {
   functionOperation?: (x: number) => number;
 };
 
-type Term = {
+export type Term = {
   exponent: Expression | Term | number;
   coefficient: Expression | Term | number;
   functionOperation?: (x: number) => number;
