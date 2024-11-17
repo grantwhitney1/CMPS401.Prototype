@@ -84,13 +84,13 @@ export const App = () => {
     if (currentGraphIndex !== null && savedGraphs[currentGraphIndex]) {
       return {
         data: [savedGraphs[currentGraphIndex]], // Show the selected saved graph
-        layout: { width: 500, height: 500 },
+        layout: { width: width, height: height },
       };
     }
     // If no graph is selected, show the current plot (if exists)
     return {
       data: plot ? [plot] : [],
-      layout: { width: 500, height: 500 },
+      layout: { width: width, height: height },
     };
   }, [currentGraphIndex, savedGraphs, plot]);
 
