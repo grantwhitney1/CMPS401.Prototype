@@ -89,14 +89,14 @@ export const App = () => {
     }
     // If no graph is selected, show the current plot (if exists)
     return {
-      data: plot ? [plot] : [],
+      data: data,
       layout: { width: width, height: height },
     };
-  }, [currentGraphIndex, savedGraphs, plot]);
+  }, [currentGraphIndex, savedGraphs, plot,data]);
 
   useEffect(() => {
     if (!plot) return;
-    if (hide) {
+    if (hide ) {
       setData(data.filter((x) => x !== plot));
     } else if (!data.includes(plot)) {
       setData([plot]);
